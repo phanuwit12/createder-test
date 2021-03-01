@@ -1,25 +1,51 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from 'react'
+import Content from './container/contentsPage'
+import Detail from './container/detailPage'
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Redirect
+} from "react-router-dom";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+export default class App extends Component {
+  constructor(props)
+  {
+    super(props)
+    this.state={
+      dataDetail:[]
+    }
+    this.handler = this.handler.bind(this);
+
+  }
+  handler(value) {
+    this.setState({
+      dataDetail: value
+    });
 }
-
-export default App;
+  render() {
+    return (
+      <Router>
+          <Switch>
+            <Route path="/home">
+              <Content {...this.state} action={this.handler}/>
+            </Route>
+            <Route path="/detail">
+              {()=>{
+                if(this.state.dataDetail.length === 0){
+                  return <Redirect to="/home" />
+                }
+                else{
+                  return <Detail {...this.state} />
+                }
+              }}
+              
+            </Route>
+            <Route path="/">
+              <Redirect to="/home" />
+            </Route>
+          </Switch>
+      </Router>
+    );
+  }
+}
